@@ -12,15 +12,8 @@ def main():
     ds = Dataset()
     data, target = ds.createDataset()
 
-    wine = datasets.load_wine()
-    print("Features: ", wine.feature_names)
-    print("Labels: ", wine.target_names)
-    print(wine.data[0:5])
-    print(wine.target)
-    print(wine.data.shape)
-
     gnb = GaussianNB()
-    numOfSamples = wine.data.shape[0]
+    numOfSamples = data.shape[0]
 
     # getting instantiated vector x and y
     graphDatas = GraphDatas(numOfSamples - 1)
@@ -32,7 +25,7 @@ def main():
         accuracyToAverage = []
         for simulation in range(maxSimulations):
             # random_state set to simulation just to have a different seed for every simulation
-            X_train, X_test, Y_train, Y_test = train_test_split(wine.data, wine.target,
+            X_train, X_test, Y_train, Y_test = train_test_split(data, target,
                                                                 test_size=(numOfSamples - trainSize) / numOfSamples,
                                                                 random_state=simulation)
             gnb.fit(X_train, Y_train)
@@ -49,6 +42,7 @@ def main():
     plt.plot(graphDatas.x_axis, graphDatas.y_axis, '-o', color='black', markersize=2, linewidth=.5)
     plt.xlabel('train samples')
     plt.ylabel('accuracy')
+    plt.title('wine')
     plt.show()
 
 
