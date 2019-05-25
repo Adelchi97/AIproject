@@ -1,5 +1,7 @@
 from numpy import zeros
+import numpy as np
 from sklearn.preprocessing import LabelEncoder
+import csv
 
 
 class Dataset:
@@ -9,11 +11,11 @@ class Dataset:
         self.target = zeros(1)
         return
 
-    def createDataset(self):
+    def datasetToCsv(self):
 
         # ********************************************************
         # change this field according to required dataset ********
-        file = open("dataset/iris.data", 'r')
+        file = open("dataset/wine_dataset/wine.data", 'r')
         # ********************************************************
 
         if file.mode == 'r':
@@ -25,7 +27,7 @@ class Dataset:
 
             # **************************************************
             # change label index according to input datas ******
-            label_index = len(datas[0].split(','))-1
+            label_index = 0
             # **************************************************
             # if targets are strings and not numbers transform them
             if type(datas[0].split(',')[label_index]) == str:
@@ -50,9 +52,26 @@ class Dataset:
                 i = i+1
 
             # ***************************************************************
-            # change slicing if targets are not in the first column *********
-            self.target = elaborated_datas[:, len(elaborated_datas[0])-1]
-            self.finalDatas = elaborated_datas[:, :len(elaborated_datas[0])-1]
+            # change slicing according to the index of the label *********
+            self.target = elaborated_datas[:, label_index]
+            self.finalDatas = elaborated_datas[:, 1:]
             # ***************************************************************
+
+            # place attributes in right order
+            ready_for_csv = zeros((self.target.size, 14))
+            ready_for_csv[:, 0] = self.target
+            ready_for_csv[:, 1:] = self.finalDatas
+
+            # create csv
+            with open('wine.csv', 'w') as writeFile:
+                writer = csv.writer(writeFile)
+                writer.writerows(ready_for_csv)
+
+    def getDataset(self):
+
+        matrix = np.loadtxt(open("dataset/iris_dataset/iris.csv", "rb"), delimiter=",", skiprows=0)
+
+        self.finalDatas = matrix[:, 1:]
+        self.target = matrix[:, 0]
 
         return self.finalDatas, self.target
