@@ -14,7 +14,7 @@ def main():
     naiveBayes()
     perceptron()
 
-    plt.title('iris')
+    plt.title('breast cancer')
     plt.xlabel('train samples')
     plt.ylabel('error')
     plt.legend()
@@ -22,6 +22,7 @@ def main():
 
 
 def perceptron():
+    print("beginning perceptron")
     ds = Dataset()
     data, target = ds.getDataset()
 
@@ -30,29 +31,12 @@ def perceptron():
     numOfSamples = data.shape[0]
 
     # instantiates the vectors for graphing
-    graphDatas = GraphDatas(numOfSamples - 2)
-    maxSimulations = 1000
+    graphDatas = GraphDatas(numOfSamples - 10 - 200)
+    maxSimulations = 100
 
-    '''
-    X_train, X_test, Y_train, Y_test = train_test_split(data, target,
-                                                        test_size=.3,
-                                                        random_state=42)
-    sc = StandardScaler()
-    sc.fit(X_train)
-    X_train_std = sc.transform(X_train)
-    X_test_std = sc.transform(X_test)
-
-    ppt.fit(X_train_std, Y_train)
-    Y_pred = ppt.predict(X_test_std)
-
-    print(Y_test)
-    print(Y_pred)
-
-    print(metrics.accuracy_score(Y_pred, Y_test))
-'''
-
-    for trainSize in range(2, numOfSamples):
-
+    i = 0
+    for trainSize in range(10, numOfSamples-200, 1):
+        print("train size: ", trainSize)
         accuracyToAverage = []
         for simulation in range(maxSimulations):
 
@@ -66,9 +50,7 @@ def perceptron():
             X_test_std = sc.transform(X_test)
 
             try:
-                # 40 epochs, .1 learning rate
                 ppt.fit(X_train_std, Y_train)
-
                 # make prediction
                 Y_pred = ppt.predict(X_test_std)
                 accuracyToAverage.append(metrics.accuracy_score(Y_test, Y_pred))
@@ -76,14 +58,19 @@ def perceptron():
                 simulation = simulation - 1
 
         accuracy = statistics.mean(accuracyToAverage)
-        graphDatas.x_axis[trainSize - 2] = trainSize
-        graphDatas.y_axis[trainSize - 2] = 1-accuracy
+        try:
+            graphDatas.x_axis[i] = trainSize
+            graphDatas.y_axis[i] = 1-accuracy
+        except IndexError:
+            print("index out")
+        i = i + 1
 
     # plot results
     plt.plot(graphDatas.x_axis, graphDatas.y_axis, '-o', color='black', markersize=2, linewidth=.5, label='perceptron')
 
 
 def naiveBayes():
+    print("beginning naive bayes")
     ds = Dataset()
     data, target = ds.getDataset()
 
@@ -91,12 +78,13 @@ def naiveBayes():
     numOfSamples = data.shape[0]
 
     # getting instantiated vector x and y
-    graphDatas = GraphDatas(numOfSamples - 1)
-    maxSimulations = 100
+    graphDatas = GraphDatas(numOfSamples - 10 - 200)
+    maxSimulations = 10
 
     # iterates on the number of samples, splitting on every possible division
-    for trainSize in range(1, numOfSamples):
-
+    i=0
+    for trainSize in range(10, numOfSamples - 200, 1):
+        print("train size: ", trainSize)
         accuracyToAverage = []
         for simulation in range(maxSimulations):
             # random_state set to simulation just to have a different seed for every simulation
@@ -110,8 +98,12 @@ def naiveBayes():
             accuracyToAverage.append(metrics.accuracy_score(Y_test, Y_pred))
 
         accuracy = statistics.mean(accuracyToAverage)
-        graphDatas.x_axis[trainSize - 1] = trainSize
-        graphDatas.y_axis[trainSize - 1] = 1-accuracy
+        try:
+            graphDatas.x_axis[i] = trainSize
+            graphDatas.y_axis[i] = 1-accuracy
+        except IndexError:
+            print("andato fuori")
+        i = i + 1
 
     # plot results
     plt.plot(graphDatas.x_axis, graphDatas.y_axis, '-o', color='teal', markersize=2, linewidth=.5, label='naive bayes')

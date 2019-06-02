@@ -10,3 +10,5 @@ Iris:
     http://archive.ics.uci.edu/ml/datasets/Iris
 Wine:
     http://archive.ics.uci.edu/ml/datasets/Wine
+Adult:
+    http://archive.ics.uci.edu/ml/datasets/Adult
