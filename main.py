@@ -14,7 +14,7 @@ def main():
     naiveBayes()
     perceptron()
 
-    plt.title('breast cancer')
+    plt.title('pima')
     plt.xlabel('train samples')
     plt.ylabel('error')
     plt.legend()
@@ -31,18 +31,18 @@ def perceptron():
     numOfSamples = data.shape[0]
 
     # instantiates the vectors for graphing
-    graphDatas = GraphDatas(numOfSamples - 10 - 200)
-    maxSimulations = 100
+    graphDatas = GraphDatas(numOfSamples-10-100)
+    maxSimulations = 500
 
     i = 0
-    for trainSize in range(10, numOfSamples-200, 1):
+    for trainSize in range(10, numOfSamples-100, 1):
         print("train size: ", trainSize)
         accuracyToAverage = []
         for simulation in range(maxSimulations):
 
             X_train, X_test, Y_train, Y_test = train_test_split(data, target,
                                                                 test_size=(numOfSamples - trainSize) / numOfSamples,
-                                                                random_state=simulation)
+                                                                random_state=None)
             # train the scaler, it standardizes all features to have mean 0 and variance 1
             sc = StandardScaler()
             sc.fit(X_train)
@@ -78,22 +78,26 @@ def naiveBayes():
     numOfSamples = data.shape[0]
 
     # getting instantiated vector x and y
-    graphDatas = GraphDatas(numOfSamples - 10 - 200)
-    maxSimulations = 10
+    graphDatas = GraphDatas(numOfSamples-10-100)
+    maxSimulations = 500
 
-    # iterates on the number of samples, splitting on every possible division
+    # iterates on the number of samples, splitting data for each try
     i=0
-    for trainSize in range(10, numOfSamples - 200, 1):
+    for trainSize in range(10, numOfSamples-100, 1):
         print("train size: ", trainSize)
         accuracyToAverage = []
         for simulation in range(maxSimulations):
-            # random_state set to simulation just to have a different seed for every simulation
             X_train, X_test, Y_train, Y_test = train_test_split(data, target,
                                                                 test_size=(numOfSamples - trainSize) / numOfSamples,
-                                                                random_state=simulation)
-            gnb.fit(X_train, Y_train)
+                                                                random_state=None)
+            sc = StandardScaler()
+            sc.fit(X_train)
+            X_train_std = sc.transform(X_train)
+            X_test_std = sc.transform(X_test)
+
+            gnb.fit(X_train_std, Y_train)
             # predict result of test database
-            Y_pred = gnb.predict(X_test)
+            Y_pred = gnb.predict(X_test_std)
             # how often is the classifier correct?
             accuracyToAverage.append(metrics.accuracy_score(Y_test, Y_pred))
 

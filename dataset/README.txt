@@ -12,3 +12,9 @@ Wine:
     http://archive.ics.uci.edu/ml/datasets/Wine
 Adult:
     http://archive.ics.uci.edu/ml/datasets/Adult
+Ionosphere:
+    https://archive.ics.uci.edu/ml/datasets/ionosphere
+Liver disorder:
+    https://archive.ics.uci.edu/ml/datasets/liver+disorders
+Sonar:
+    https://archive.ics.uci.edu/ml/datasets/Connectionist+Bench+%28Sonar,+Mines+vs.+Rocks%29
