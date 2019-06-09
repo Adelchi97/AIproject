@@ -14,7 +14,7 @@ def main():
     naiveBayes()
     perceptron()
 
-    plt.title('pima')
+    plt.title('ecoli')
     plt.xlabel('train samples')
     plt.ylabel('error')
     plt.legend()

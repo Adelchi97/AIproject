@@ -9,7 +9,7 @@ import pandas as pd
 class Dataset:
 
     def __init__(self):
-        self.finalDatas = zeros(1)
+        self.finalData = zeros(1)
         self.target = zeros(1)
         return
 
@@ -37,19 +37,19 @@ class Dataset:
             elaborated_datas = np.array(datas_in_number)
 
             # **************************************************
-            # change label index according to input datas ******
+            # change label index according to input data ******
             label_index = elaborated_datas.shape[1]-1
             # **************************************************
 
             # ***************************************************************
             # change slicing according to the index of the label *********
             self.target = elaborated_datas[:, label_index]
-            self.finalDatas = elaborated_datas[:, :label_index]
+            self.finalData = elaborated_datas[:, :label_index]
             # ***************************************************************
 
             # place attributes in right order
             ready_for_csv = zeros((self.target.size, elaborated_datas.shape[1]-1))
-            ready_for_csv[:, 1:] = self.finalDatas[:, 1:]
+            ready_for_csv[:, 1:] = self.finalData[:, 1:]
             ready_for_csv[:, 0] = self.target
 
             # create csv
@@ -61,10 +61,10 @@ class Dataset:
 
         matrix = np.loadtxt(open("dataset/ecoli_dataset/ecoli.csv", "rb"), delimiter=",", skiprows=0)
 
-        self.finalDatas = matrix[:, 1:]
+        self.finalData = matrix[:, 1:]
         self.target = matrix[:, 0]
 
-        return self.finalDatas, self.target
+        return self.finalData, self.target
 
 
 def main():
