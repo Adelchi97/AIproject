@@ -1,4 +1,4 @@
-from sklearn.naive_bayes import GaussianNB
+from sklearn.naive_bayes import MultinomialNB
 from sklearn.model_selection import train_test_split
 from sklearn import metrics
 import statistics
@@ -14,7 +14,7 @@ def main():
     naiveBayes()
     perceptron()
 
-    plt.title('ecoli')
+    plt.title('adult')
     plt.xlabel('train samples')
     plt.ylabel('error')
     plt.legend()
@@ -27,46 +27,46 @@ def perceptron():
     data, target = ds.getDataset()
 
     # for multiclass dataset uses One vs. All by default
-    ppt = Perceptron(eta0=0.1, random_state=42)
-    numOfSamples = data.shape[0]
+    ppt = Perceptron(eta0=0.1, random_state=42, max_iter=100)
+    num_of_samples = data.shape[0]
 
     # instantiates the vectors for graphing
-    graphDatas = GraphDatas(numOfSamples-10-100)
-    maxSimulations = 500
+    graph_datas = GraphDatas(num_of_samples - 10-32400)
+    max_simulations = 1000
 
     i = 0
-    for trainSize in range(10, numOfSamples-100, 1):
+    for trainSize in range(10, num_of_samples-32400, 1):
         print("train size: ", trainSize)
-        accuracyToAverage = []
-        for simulation in range(maxSimulations):
+        accuracy_to_average = []
+        for simulation in range(max_simulations):
 
-            X_train, X_test, Y_train, Y_test = train_test_split(data, target,
-                                                                test_size=(numOfSamples - trainSize) / numOfSamples,
+            x_train, x_test, y_train, y_test = train_test_split(data, target,
+                                                                test_size=(num_of_samples - trainSize) / num_of_samples,
                                                                 random_state=None)
             # train the scaler, it standardizes all features to have mean 0 and variance 1
             sc = StandardScaler()
-            sc.fit(X_train)
-            X_train_std = sc.transform(X_train)
-            X_test_std = sc.transform(X_test)
+            sc.fit(x_train)
+            x_train_std = sc.transform(x_train)
+            x_test_std = sc.transform(x_test)
 
             try:
-                ppt.fit(X_train_std, Y_train)
+                ppt.fit(x_train_std, y_train)
                 # make prediction
-                Y_pred = ppt.predict(X_test_std)
-                accuracyToAverage.append(metrics.accuracy_score(Y_test, Y_pred))
+                y_pred = ppt.predict(x_test_std)
+                accuracy_to_average.append(metrics.accuracy_score(y_test, y_pred))
             except ValueError:
                 simulation = simulation - 1
 
-        accuracy = statistics.mean(accuracyToAverage)
+        accuracy = statistics.mean(accuracy_to_average)
         try:
-            graphDatas.x_axis[i] = trainSize
-            graphDatas.y_axis[i] = 1-accuracy
+            graph_datas.x_axis[i] = trainSize
+            graph_datas.y_axis[i] = 1 - accuracy
         except IndexError:
             print("index out")
         i = i + 1
 
     # plot results
-    plt.plot(graphDatas.x_axis, graphDatas.y_axis, '-o', color='black', markersize=2, linewidth=.5, label='perceptron')
+    plt.plot(graph_datas.x_axis, graph_datas.y_axis, '-o', color='black', markersize=2, linewidth=.5, label='perceptron')
 
 
 def naiveBayes():
@@ -74,43 +74,40 @@ def naiveBayes():
     ds = Dataset()
     data, target = ds.getDataset()
 
-    gnb = GaussianNB()
-    numOfSamples = data.shape[0]
+    # var_smoothing Portion of the largest variance of all features that is added to variances for calculation stability
+    gnb = MultinomialNB(alpha=2)  # var_smoothing=1e-01)
+    num_of_samples = data.shape[0]
 
     # getting instantiated vector x and y
-    graphDatas = GraphDatas(numOfSamples-10-100)
-    maxSimulations = 500
+    graph_data = GraphDatas(num_of_samples - 10-32400)
+    max_simulations = 1000
 
     # iterates on the number of samples, splitting data for each try
-    i=0
-    for trainSize in range(10, numOfSamples-100, 1):
+    i = 0
+    for trainSize in range(10, num_of_samples-32400, 1):
         print("train size: ", trainSize)
-        accuracyToAverage = []
-        for simulation in range(maxSimulations):
-            X_train, X_test, Y_train, Y_test = train_test_split(data, target,
-                                                                test_size=(numOfSamples - trainSize) / numOfSamples,
+        accuracy_to_average = []
+        for simulation in range(max_simulations):
+            x_train, x_test, y_train, y_test = train_test_split(data, target,
+                                                                test_size=(num_of_samples - trainSize) / num_of_samples,
                                                                 random_state=None)
-            sc = StandardScaler()
-            sc.fit(X_train)
-            X_train_std = sc.transform(X_train)
-            X_test_std = sc.transform(X_test)
 
-            gnb.fit(X_train_std, Y_train)
+            gnb.fit(x_train, y_train)
             # predict result of test database
-            Y_pred = gnb.predict(X_test_std)
+            y_pred = gnb.predict(x_test)
             # how often is the classifier correct?
-            accuracyToAverage.append(metrics.accuracy_score(Y_test, Y_pred))
+            accuracy_to_average.append(metrics.accuracy_score(y_test, y_pred))
 
-        accuracy = statistics.mean(accuracyToAverage)
+        accuracy = statistics.mean(accuracy_to_average)
         try:
-            graphDatas.x_axis[i] = trainSize
-            graphDatas.y_axis[i] = 1-accuracy
+            graph_data.x_axis[i] = trainSize
+            graph_data.y_axis[i] = 1 - accuracy
         except IndexError:
-            print("andato fuori")
+            print("index out")
         i = i + 1
 
     # plot results
-    plt.plot(graphDatas.x_axis, graphDatas.y_axis, '-o', color='teal', markersize=2, linewidth=.5, label='naive bayes')
+    plt.plot(graph_data.x_axis, graph_data.y_axis, '-o', color='teal', markersize=2, linewidth=.5, label='naive bayes')
 
 
 if __name__ == "__main__":
