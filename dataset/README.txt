@@ -26,3 +26,6 @@ Breast Cancer:
     https://archive.ics.uci.edu/ml/datasets/breast+cancer+wisconsin+(original)
 Adult:
     https://archive.ics.uci.edu/ml/datasets/adult
+
+
+The python file dataset.py contains a function that I used to create the csv files for every dataset and a function getDataset() that returns a csv. 
